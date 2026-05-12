@@ -1,51 +1,61 @@
 import pandas as pd 
 import MySQLdb as mysqldb
-import sys 
+import MySQLdb.cursors
+import sys
+import os
 
-datasets = dict(
-CUSTOMERS = "../data/olist_customers_dataset.csv",
-GEOLOCATION = "../data/olist_geolocation_dataset.csv",
-ORDER_ITEMS = "../data/olist_order_items_dataset.csv",
-ORDER_PAYMENTS = "../data/olist_order_payments_dataset.csv",
-ORDER_REVIEWS = "../data/olist_reviews_dataset.csv",
-PRODUCTS = "../data/olist_products_dataset.csv",
-SELLERS = "../data/olist_sellers_dataset.csv",
-PRODUCT_TRANSLATION = "../data/product_category_name_translation.csv",
-)
+SCRIPT_PATH = os.path.dirname(os.path.abspath( __file__ ))
+
+DATASETS = {
+        "olist_customers_dataset": "../data/raw/olist_customers_dataset.csv",
+        "olist_geolocation_dataset": "../data/raw/olist_geolocation_dataset.csv",
+        "olist_order_items_dataset": "../data/raw/olist_order_items_dataset.csv",
+        "olist_order_payments_dataset": "../data/raw/olist_order_payments_dataset.csv",
+        "olist_order_reviews_dataset": "../data/raw/olist_order_reviews_dataset.csv",
+        "olist_products_dataset": "../data/raw/olist_products_dataset.csv",
+        "olist_sellers_dataset": "../data/raw/olist_sellers_dataset.csv",
+        "product_category_name_translation": "../data/raw/product_category_name_translation.csv"
+}
 
 DB_CONFIG = {
-
-       "user": "olist_user",
-       "password": "password", 
-       "host": "localhost",
-       "port": 3306,
-       "database": "olist_ecommerce"
-    }      
+    "user": "olist_user",
+    "password": "password",
+    "host": "localhost",
+    "port": 3306,
+    "database": "olist_ecommerce"
+}
 def connect_db(conn):
-
-    with open("../database/user_setup.sql", "r") as f:
-        user_setup = f.read()
-    conn.executescript(user_setup)
-
-    with open("../database/schema.sql", "r") as s:
-        schema = f.read()
-    conn.executescript(schema)
-
-
-def load_data(datasets):
-    try:
-        conn = mysqldb.connect(**DB_CONFIG) 
-        print("\n\nconnected to db")
-    except mysqldb.Error as e:
-        print(f"mariadb connection error: {e}")
-        sys.exit(1)
     cur = conn.cursor()
 
-    for v in datasets.values():
-        print(v)
-        
+    with open(os.path.join(SCRIPT_PATH,"../database/schema.sql"), "r") as s:
+        schema = s.read()
+    for statement in schema.split(";"):
+        stmt = statement.strip()
+        if stmt:
+            cur.execute(stmt)
+
+def load_table():
+    pass    
 def create_tables():
-    df = load_data(datasets)
+    with mysqldb.connect(**DB_CONFIG, cursorclass=MySQLdb.cursors.DictCursor) as conn: 
+
+        try:
+            connect_db(conn)             
+            print("\nconnected to db\n")
+        except mysqldb.Error as e:
+            print(f"mariadb connection error: {e}")
+            sys.exit(1)
+
+        for v in DATASETS.values():
+            file_path = os.path.join(SCRIPT_PATH, v)
+            df = pd.read_csv(file_path, encoding="utf-8")
+            cur = conn.cursor()
+            print(file_path)
+            #cur.execute("SHOW TABLES")
+            #rows = cur.fetchall()
+            #print(rows)
+
+            #conn.commit()
 
 def main(): 
     create_tables()

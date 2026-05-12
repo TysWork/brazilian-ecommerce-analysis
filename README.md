@@ -1,5 +1,7 @@
 # E-Commerce Delivery, Review, and Category Performance Analysis
 
+###In Progress
+
 ## Project Goal:
 
 Analyze how delivery performance, product category, and seller behavior affect customer satisfaction.
