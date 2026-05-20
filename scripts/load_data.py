@@ -24,6 +24,7 @@ DB_CONFIG = {
     "port": 3306,
     "database": "olist_ecommerce"
 }
+
 def connect_db(conn):
     cur = conn.cursor()
 
@@ -42,13 +43,11 @@ def load_table(conn, table, csv_path):
     
     df = pd.read_csv(csv_path)
     df = df[[col for col in df.columns if col in db_cols]]
-    df = df.where(pd.notna(df), None)
-    
+    df = df.where(pd.notna(df), None) 
     rows = [
         [None if (v != v) else v for v in row]
         for row in df.values.tolist() 
     ]
-
     cols = ", ".join(df.columns)
     placeholders = ", ".join(["%s"] * len(df.columns))
     sql = f"INSERT IGNORE INTO {table} ({cols}) VALUES ({placeholders})"
@@ -56,10 +55,8 @@ def load_table(conn, table, csv_path):
     conn.commit()
     print(f"filled {len(df)} rows into `{table}`")
 
-
 def main(): 
     with mysqldb.connect(**DB_CONFIG, cursorclass=MySQLdb.cursors.DictCursor) as conn: 
-
         try:
             connect_db(conn)             
             print("\nconnected to db\n")
@@ -69,7 +66,6 @@ def main():
         data_dir = os.path.join(SCRIPT_PATH, "../data/raw/")
         for table, csv_file in DATASETS.items():
             load_table(conn, table,os.path.join(data_dir, csv_file)) 
-
 
 if __name__ == "__main__":
     main()
