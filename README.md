@@ -32,4 +32,4 @@ This project is organized into four analysis areas:
 - Are repeat customers more valuable than one-time customers?
 - How do freight costs affect total order value?
 - What factors appear most onnected to low review scores?
-
+ 
