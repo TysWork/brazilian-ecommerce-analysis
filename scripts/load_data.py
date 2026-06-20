@@ -15,7 +15,8 @@ DATASETS = {
     "orders":              "olist_orders_dataset.csv",
     "order_items":         "olist_order_items_dataset.csv",
     "order_payments":      "olist_order_payments_dataset.csv",
-    "order_reviews":       "olist_order_reviews_dataset.csv",}
+    "order_reviews":       "olist_order_reviews_dataset.csv",
+    }
 
 DB_CONFIG = {
     "user": "olist_user",
