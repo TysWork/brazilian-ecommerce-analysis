@@ -56,17 +56,33 @@ def load_table(conn, table, csv_path):
     conn.commit()
     print(f"filled {len(df)} rows into `{table}`")
 
-def main(): 
-    with mysqldb.connect(**DB_CONFIG, cursorclass=MySQLdb.cursors.DictCursor) as conn: 
-        try:
-            connect_db(conn)             
-            print("\nconnected to db\n")
-        except mysqldb.Error as e:
-            print(f"mariadb connection error: {e}")
-            sys.exit(1)
+def main():
+    conn = None
+
+    try:
+        conn = mysqldb.connect(
+            **DB_CONFIG,
+            cursorclass=mysqldb.cursors.DictCursor
+        )
+        print("\nconnected to db\n")
+
+        connect_db(conn)
+        print("created tables\n")
+
         data_dir = os.path.join(SCRIPT_PATH, "../data/raw/")
+
         for table, csv_file in DATASETS.items():
-            load_table(conn, table,os.path.join(data_dir, csv_file)) 
+            load_table(conn, table, os.path.join(data_dir, csv_file))
+
+        conn.commit()
+
+    except mysqldb.Error as e:
+        print(f"mariadb connection error: {e}")
+        sys.exit(1)
+
+    finally:
+        if conn:
+            conn.close()
 
 if __name__ == "__main__":
     main()
