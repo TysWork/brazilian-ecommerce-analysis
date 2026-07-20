@@ -2,8 +2,6 @@
 
 ### In Progress
 
-## How to Run:
-
 ## How to Run
 
 1. Install MariaDB and the required Python package:
