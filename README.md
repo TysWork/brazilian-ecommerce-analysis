@@ -4,14 +4,36 @@
 
 ## How to Run:
 
-1. Install required packages MariaDB and MySQLdb using: 
-    `sudo apt install mariadb-server mariadb-client`
-    `sudo apt install python3-mysqldb`
-    `sudo service mariadb start`
-2. Set up your olist_user through database/setup_user.sql (check password in
-    both database/setup_user and scripts/load_data.py)
-3. Run `sudo mariadb < setup_user.sql` or `sudo mariadb < database/setup_user.sql`
-4. Test login wit `mysql -u olist_user -p olist_ecommerce` and enter `DBCONFIG` password.
+## How to Run
+
+1. Install MariaDB and the required Python package:
+
+```bash
+sudo apt update
+sudo apt install mariadb-server mariadb-client python3-mysqldb
+```
+
+2. Start MariaDB:
+
+```bash
+sudo service mariadb start
+```
+
+3. Check that the username and password match in `database/setup_user.sql` and `scripts/load_data.py`.
+
+4. Create the database and user:
+
+```bash
+sudo mariadb < database/setup_user.sql
+```
+
+5. Test the login:
+
+```bash
+mysql -u olist_user -p olist_ecommerce
+```
+
+Enter the password stored in `DB_CONFIG`.
 
 ## Project Goal:
 
