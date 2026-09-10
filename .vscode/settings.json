@@ -11,8 +11,9 @@
             "port": 3306,
             "driver": "MariaDB",
             "name": "olist_ecommerce",
+            "database": "olist_ecommerce",
             "username": "olist_user",
-            "database": "olist_ecommerce"
+            "askForPassword": true
         }
     ]
 }
